@@ -58,6 +58,10 @@ int main(int argc, const char *argv[])
 
         //// STUDENT ASSIGNMENT
         //// TASK MP.1 -> replace the following code with ring buffer of size dataBufferSize
+        if (dataBuffer.size() > dataBufferSize) {
+            dataBuffer.erase(dataBuffer.begin());
+            cout << "Erased first in image in buffer." << endl;
+        }
 
         // push image into data frame buffer
         DataFrame frame;
@@ -101,7 +105,7 @@ int main(int argc, const char *argv[])
         //// EOF STUDENT ASSIGNMENT
 
         // optional : limit number of keypoints (helpful for debugging and learning)
-        bool bLimitKpts = false;
+        bool bLimitKpts = true;
         if (bLimitKpts)
         {
             int maxKeypoints = 50;
