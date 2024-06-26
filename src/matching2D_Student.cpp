@@ -101,3 +101,103 @@ void detKeypointsShiTomasi(vector<cv::KeyPoint> &keypoints, cv::Mat &img, bool b
         cv::waitKey(0);
     }
 }
+
+// Detect keypoints in image using the Harris detector
+void detKeypointsHarris(vector<cv::KeyPoint> &keypoints, cv::Mat &img, bool bVis)
+{
+    // compute detector parameters based on image size
+    int blockSize = 4;       //  size of an average block for computing a derivative covariation matrix over each pixel neighborhood
+    double maxOverlap = 0.0; // max. permissible overlap between two features in %
+    double minDistance = (1.0 - maxOverlap) * blockSize;
+    int maxCorners = img.rows * img.cols / max(1.0, minDistance); // max. num. of keypoints
+
+    double qualityLevel = 0.01; // minimal accepted quality of image corners
+    double k = 0.04;
+
+    // Apply corner detection
+    double t = (double)cv::getTickCount();
+    vector<cv::Point2f> corners;
+    cv::goodFeaturesToTrack(img, corners, maxCorners, qualityLevel, minDistance, cv::Mat(), blockSize, true, k);
+
+    // add corners to result vector
+    for (auto it = corners.begin(); it != corners.end(); ++it)
+    {
+
+        cv::KeyPoint newKeyPoint;
+        newKeyPoint.pt = cv::Point2f((*it).x, (*it).y);
+        newKeyPoint.size = blockSize;
+        keypoints.push_back(newKeyPoint);
+    }
+    t = ((double)cv::getTickCount() - t) / cv::getTickFrequency();
+    cout << "Harris detection with n=" << keypoints.size() << " keypoints in " << 1000 * t / 1.0 << " ms" << endl;
+
+    // visualize results
+    if (bVis)
+    {
+        cv::Mat visImage = img.clone();
+        cv::drawKeypoints(img, keypoints, visImage, cv::Scalar::all(-1), cv::DrawMatchesFlags::DRAW_RICH_KEYPOINTS);
+        string windowName = "Harris Corner Detector Results";
+        cv::namedWindow(windowName, 6);
+        imshow(windowName, visImage);
+        cv::waitKey(0);
+    }
+}
+
+cv::Ptr<cv::FeatureDetector> createDetector(const std::string& detectorType) {
+    if (detectorType == "BRISK") {
+        return cv::BRISK::create();
+    } else if (detectorType == "ORB") {
+        return cv::ORB::create();
+    } else if (detectorType == "AKAZE") {
+        return cv::AKAZE::create();
+    } else if (detectorType == "SIFT") {
+        return cv::xfeatures2d::SIFT::create();
+    } else if (detectorType == "SURF") {
+        return cv::xfeatures2d::SURF::create();
+    } else {
+        throw std::invalid_argument("Unsupported detector type: " + detectorType);
+    }
+}
+
+void detKeypointsModern(std::vector<cv::KeyPoint> &keypoints, cv::Mat &img, std::string detectorType, bool bVis) {
+
+    int threshold = 30;                                                              // difference between intensity of the central pixel and pixels of a circle around this pixel bool bNMS = true;                                                                // perform non-maxima suppression on keypoints
+    bool bNMS = true;
+    cv::Ptr<cv::FeatureDetector> detector;
+
+    if (detectorType == "FAST") {
+      cv::FastFeatureDetector::DetectorType type = cv::FastFeatureDetector::TYPE_9_16; // TYPE_9_16, TYPE_7_12, TYPE_5_8
+      detector = cv::FastFeatureDetector::create(threshold, bNMS, type);
+    }
+    else {
+    detector = createDetector(detectorType);
+    // cv::Ptr<cv::FeatureDetector> detector = cv::BRISK::create();//threshold, octaves, patternScale);
+    }
+    // vector<cv::KeyPoint> kptsFAST;
+    double t = (double)cv::getTickCount();
+    detector->detect(img, keypoints);
+    t = ((double)cv::getTickCount() - t) / cv::getTickFrequency();
+    cout << detectorType << " with n= " << keypoints.size() << " keypoints in " << 1000 * t / 1.0 << " ms" << endl;
+
+    if (bVis) {
+    cv::Mat visImage = img.clone();
+    cv::drawKeypoints(img, keypoints, visImage, cv::Scalar::all(-1), cv::DrawMatchesFlags::DRAW_RICH_KEYPOINTS);
+    string windowName = detectorType;
+    cv::namedWindow(windowName, 2);
+    imshow(windowName, visImage);
+    cv::waitKey(0);
+    }
+}
+
+void filterKeypoints(std::vector<cv::KeyPoint> &keypoints, cv::Rect rect){
+    // Lambda function to check if a keypoint is inside the rectangle
+    auto isOutsideRect = [&rect](const cv::KeyPoint &kp) {
+        return !rect.contains(kp.pt);
+    };
+
+    // use remove_if and erase to remove keypoints outside the rect
+    keypoints.erase(
+        std::remove_if(keypoints.begin(), keypoints.end(), isOutsideRect),\
+        keypoints.end()
+    );
+}
