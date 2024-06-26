@@ -102,7 +102,7 @@ int main(int argc, const char *argv[])
         cv::Rect vehicleRect(535, 180, 180, 150);
         if (bFocusOnVehicle)
         {
-           filterKeypoints(keypoints, vehicleRect); 
+           filterKeypoints(keypoints, vehicleRect); // disable for final project
         }
 
         //// EOF STUDENT ASSIGNMENT
