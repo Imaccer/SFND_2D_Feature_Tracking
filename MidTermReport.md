@@ -21,7 +21,3 @@ This report outlines how each criterion for the mid-term project was addressed. 
 | **MP.9 Performance Evaluation 3** | Log the time it takes for keypoint detection and descriptor extraction. The results must be entered into a spreadsheet and based on this data, the TOP3 detector / descriptor combinations must be recommended as the best choice for our purpose of detecting keypoints on vehicles. | `sorted_performance_metrics.csv` |  | Measured and logged the time for detection and extraction processes. Analyzed results to recommend the top 3 detector-descriptor combinations as follows: 1. FAST/BRIEF. 2. FAST/ORB 3. ORB/BRIEF . |
 
 
-## Conclusion
-
-This report details the implementation and evaluation of keypoint detection and descriptor techniques as required by the project rubric. Each criterion has been addressed with corresponding solutions and evaluations. The results of
-
