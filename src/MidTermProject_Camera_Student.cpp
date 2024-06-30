@@ -71,7 +71,8 @@ int main(int argc, const char *argv[])
             dataBuffer.clear();
 
             if ((descriptorType == "AKAZE" && detectorType != "AKAZE") ||
-                (detectorType == "AKAZE" && descriptorType != "AKAZE"))
+                (detectorType == "AKAZE" && descriptorType != "AKAZE") ||
+                (detectorType == "SIFT" && descriptorType == "ORB"))
             {
                 continue; // Skip incompatible combinations
             }
