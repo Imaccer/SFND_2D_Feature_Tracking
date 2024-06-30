@@ -58,8 +58,7 @@ int main(int argc, const char *argv[])
 
     /* MAIN LOOP OVER ALL IMAGES */
     // Detector and descriptor types
-    // vector<string> detectorTypes = {"SHITOMASI", "HARRIS", "FAST", "BRISK", "ORB", "AKAZE", "SIFT"};
-    vector<string> detectorTypes = {"HARRIS", "FAST", "BRISK", "ORB", "AKAZE", "SIFT"};
+    vector<string> detectorTypes = {"SHITOMASI", "HARRIS", "FAST", "BRISK", "ORB", "AKAZE", "SIFT"};
     vector<string> descriptorTypes = {"BRIEF", "ORB", "FREAK", "AKAZE", "SIFT"};
 
     // Main loop over all images
@@ -104,7 +103,6 @@ int main(int argc, const char *argv[])
                 frame.cameraImg = imgGray;
                 dataBuffer.push_back(frame);
 
-                
                 //// EOF STUDENT ASSIGNMENT
                 cout << "#1 : LOAD IMAGE INTO BUFFER done" << endl;
 
@@ -132,6 +130,7 @@ int main(int argc, const char *argv[])
                 {
                     detKeypointsModern(keypoints, imgGray, detectorType, false);
                 }
+
                 detector_time = 1000.0 * ((double)cv::getTickCount() - detector_time) / cv::getTickFrequency();
                 //// EOF STUDENT ASSIGNMENT
 
@@ -151,7 +150,7 @@ int main(int argc, const char *argv[])
                 //// EOF STUDENT ASSIGNMENT
 
                 // optional : limit number of keypoints (helpful for debugging and learning)
-                bool bLimitKpts = true;
+                bool bLimitKpts = false;
                 if (bLimitKpts)
                 {
                     int maxKeypoints = 50;
@@ -217,7 +216,7 @@ int main(int argc, const char *argv[])
                     logMetrics(detectorType, descriptorType, keypoints.size(), matches.size(), detector_time, descriptor_time);
 
                     // visualize matches between current and previous image
-                    bVis = true;
+                    bVis = false;
                     if (bVis)
                     {
                         cv::Mat matchImg = ((dataBuffer.end() - 1)->cameraImg).clone();
@@ -232,11 +231,11 @@ int main(int argc, const char *argv[])
                         cv::imshow(windowName, matchImg);
                         cout << "Press key to continue to next image" << endl;
                         cv::waitKey(0); // wait for key to be pressed
+
                         matchImg.release();
                     }
                     bVis = false;
                 }
-
 
             } // eof loop over all images
         }
