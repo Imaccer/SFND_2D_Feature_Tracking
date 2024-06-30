@@ -21,14 +21,14 @@ using namespace std;
 
 void logMetrics(const string &detectorType, const string &descriptorType, int keypoints, int matches, double detector_time, double descriptor_time)
 {
-    ofstream logFile("performance_metrics.csv", ios::app);
+    ofstream logFile("../performance_metrics.csv", ios::app);
     logFile << detectorType << "," << descriptorType << "," << keypoints << "," << matches << "," << detector_time << "," << descriptor_time << "\n";
     logFile.close();
 }
 
 void clearLogFile()
 {
-    ofstream logFile("performance_metrics.csv");
+    ofstream logFile("../performance_metrics.csv");
     logFile << "Detector,Descriptor,Keypoints,Matches,Detector Time(ms),Descriptor Time(ms)\n";
     logFile.close();
 }
