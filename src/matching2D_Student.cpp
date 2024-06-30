@@ -220,6 +220,7 @@ void detKeypointsModern(std::vector<cv::KeyPoint> &keypoints, cv::Mat &img, std:
     cv::namedWindow(windowName, 2);
     imshow(windowName, visImage);
     cv::waitKey(0);
+    img.release();
     }
 }
 
