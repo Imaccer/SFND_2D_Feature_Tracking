@@ -19,17 +19,17 @@
 
 using namespace std;
 
-void logMetrics(const string &detectorType, const string &descriptorType, int keypoints, int matches, double time)
+void logMetrics(const string &detectorType, const string &descriptorType, int keypoints, int matches, double detector_time, double descriptor_time)
 {
     ofstream logFile("performance_metrics.csv", ios::app);
-    logFile << detectorType << "," << descriptorType << "," << keypoints << "," << matches << "," << time << "\n";
+    logFile << detectorType << "," << descriptorType << "," << keypoints << "," << matches << "," << detector_time << "," << descriptor_time << "\n";
     logFile.close();
 }
 
 void clearLogFile()
 {
     ofstream logFile("performance_metrics.csv");
-    logFile << "Detector,Descriptor,Keypoints,Matches,Time(ms)\n";
+    logFile << "Detector,Descriptor,Keypoints,Matches,Detector Time(ms),Descriptor Time(ms)\n";
     logFile.close();
 }
 
@@ -118,6 +118,8 @@ int main(int argc, const char *argv[])
                 //// TASK MP.2 -> add the following keypoint detectors in file matching2D.cpp and enable string-based selection based on detectorType
                 //// -> HARRIS, FAST, BRISK, ORB, AKAZE, SIFT
                 // auto detector_start = high_resolution
+                double detector_time = (double)cv::getTickCount();
+
                 if (detectorType.compare("SHITOMASI") == 0)
                 {
                     detKeypointsShiTomasi(keypoints, imgGray, false);
@@ -130,6 +132,7 @@ int main(int argc, const char *argv[])
                 {
                     detKeypointsModern(keypoints, imgGray, detectorType, false);
                 }
+                detector_time = 1000.0 * ((double)cv::getTickCount() - detector_time) / cv::getTickFrequency();
                 //// EOF STUDENT ASSIGNMENT
 
                 img.release();
@@ -171,10 +174,10 @@ int main(int argc, const char *argv[])
                 //// TASK MP.4 -> add the following descriptors in file matching2D.cpp and enable string-based selection based on descriptorType
                 //// -> BRIEF, ORB, FREAK, AKAZE, SIFT
                 cv::Mat descriptors;
-                double descriptor_t = (double)cv::getTickCount();
+                double descriptor_time = (double)cv::getTickCount();
                 // string descriptorType = "BRISK"; // BRIEF, ORB, FREAK, AKAZE, SIFT
                 descKeypoints((dataBuffer.end() - 1)->keypoints, (dataBuffer.end() - 1)->cameraImg, descriptors, descriptorType);
-                descriptor_t = 1000.0 * ((double)cv::getTickCount() - descriptor_t) / cv::getTickFrequency();
+                descriptor_time = 1000.0 * ((double)cv::getTickCount() - descriptor_time) / cv::getTickFrequency();
                 //// EOF STUDENT ASSIGNMENT
 
                 // push descriptors for current frame to end of data buffer
@@ -211,7 +214,7 @@ int main(int argc, const char *argv[])
                     cout << "#4 : MATCH KEYPOINT DESCRIPTORS done" << endl;
 
                     // Log metrics
-                    logMetrics(detectorType, descriptorType, keypoints.size(), matches.size(), descriptor_t);
+                    logMetrics(detectorType, descriptorType, keypoints.size(), matches.size(), detector_time, descriptor_time);
 
                     // visualize matches between current and previous image
                     bVis = true;
