@@ -228,6 +228,7 @@ int main(int argc, const char *argv[])
                         cv::imshow(windowName, matchImg);
                         cout << "Press key to continue to next image" << endl;
                         cv::waitKey(0); // wait for key to be pressed
+                        matchImg.release();
                     }
                     bVis = false;
                 }
