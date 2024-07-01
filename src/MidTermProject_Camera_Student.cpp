@@ -52,7 +52,7 @@ int main(int argc, const char *argv[])
     int imgFillWidth = 4;  // no. of digits which make up the file index (e.g. img-0001.png)
 
     // misc
-    int dataBufferSize = 2;       // no. of images which are held in memory (ring buffer) at the same time - 2 for const vel model, 3 for const accel model
+    size_t dataBufferSize = 2;       // no. of images which are held in memory (ring buffer) at the same time - 2 for const vel model, 3 for const accel model
     vector<DataFrame> dataBuffer; // list of data frames which are held in memory at the same time
     bool bVis = false;            // visualize results
 
@@ -76,7 +76,7 @@ int main(int argc, const char *argv[])
                 continue; // Skip incompatible combinations
             }
 
-            for (size_t imgIndex = 0; imgIndex <= imgEndIndex - imgStartIndex; imgIndex++)
+            for (int imgIndex = 0; imgIndex <= imgEndIndex - imgStartIndex; imgIndex++)
             {
                 /* LOAD IMAGE INTO BUFFER */
 

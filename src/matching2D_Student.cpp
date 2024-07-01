@@ -200,8 +200,8 @@ void detKeypointsModern(std::vector<cv::KeyPoint> &keypoints, cv::Mat &img, std:
     cv::Ptr<cv::FeatureDetector> detector;
 
     if (detectorType == "FAST") {
-      cv::FastFeatureDetector::DetectorType type = cv::FastFeatureDetector::TYPE_9_16; // TYPE_9_16, TYPE_7_12, TYPE_5_8
-      detector = cv::FastFeatureDetector::create(threshold, bNMS, type);
+    //   cv::FastFeatureDetector::DetectorType type = cv::FastFeatureDetector::TYPE_9_16; // TYPE_9_16, TYPE_7_12, TYPE_5_8
+      detector = cv::FastFeatureDetector::create(threshold, bNMS);//, type);
     }
     else {
     detector = createDetector(detectorType);
